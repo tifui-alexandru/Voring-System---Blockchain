@@ -1,3 +1,17 @@
+noCandidates = 10
+candidates = [
+    "Candidate 1",
+    "Candidate 2",
+    "Candidate 3",
+    "Candidate 4",
+    "Candidate 5",
+    "Candidate 6",
+    "Candidate 7",
+    "Candidate 8",
+    "Candidate 9",
+    "Candidate 10",
+];
+
 function constructErrorCard(msg) {
     errorCard = document.createElement('div');
     errorCard.className = 'card';
@@ -12,92 +26,45 @@ function constructErrorCard(msg) {
     return errorCard;
 }
 
-async function register() {
-    username = document.getElementById("form3Example1c").value;
-    pass = document.getElementById("form3Example4c").value;
+async function vote() {
+    state = await getElectionsState(); // do something
 
-    ok = await callRegister(username, pass);
+    token = document.getElementById("token").value;
+
+    select = document.getElementById('candidates');
+    voteOption = select.options[select.selectedIndex].value;
+
+    response = await callVote(token, voteOption);
     errorCard = document.getElementById("error-card");
 
-    if (ok) {
+    if (response === "Success") {
         if (errorCard !== null)
             errorCard.parentNode.removeChild(errorCard);
         window.location.replace(apiUrl);
     }
     else {
         if (errorCard === null) {
-            errorCard = constructErrorCard("Invalid username or password");
-            form = document.getElementById("signupForm");
+            errorCard = constructErrorCard(response);
+            form = document.getElementById("voteForm");
             form.appendChild(errorCard);
         }
     }
 }
 
-async function login() {
-    username = document.getElementById("form3Example3").value;
-    pass = document.getElementById("form3Example4").value;
+async function getResults() {
+    state = await getElectionsState(); // do something
 
-    ok = await callLogin(username, pass);
-    errorCard = document.getElementById("error-card");
+    totalVotes = 0
+    for (let i = 0; i < noCandidates; ++i)
+        totalVotes += number(await getNthResult(i));
 
-    if (ok) {
-        if (errorCard !== null)
-            errorCard.parentNode.removeChild(errorCard);
-        window.location.replace(apiUrl);
+    for (let i = 0; i < noCandidates; ++i) {
+        candidateName = await getNthCandidate(i);
+        candidateResult = number(await getNthResult(i));
+
+        candidateResult = 100 * (candidateResult / totalVotes);
+
+        document.getElementById('results' + i).innerText = candidateResult;
+        document.getElementById('name' + i).innerText = candidateName;
     }
-    else {
-        if (errorCard === null) {
-            errorCard = constructErrorCard("Wrong username or password");
-            form = document.getElementById("loginForm");
-            form.appendChild(errorCard);
-        }
-    }
-}
-
-async function logout() {
-    await fetch("/auth/logout");
-    window.location.replace(apiUrl + '/login');
-}
-
-async function forceWater() {
-    waterAmount = (document.getElementById("water").value);
-    ok = callForceWater(Number(waterAmount));
-    if (ok && waterAmount != '')
-        alert("Force water was successfull");
-    else
-        alert("Can't force water - invalid fields");
-}
-
-async function setCharacteristics() {
-    idealHum = (document.getElementById('idealHumidity').value);
-    idealTemp = (document.getElementById('idealTemp').value);
-
-    ok = callSetCharacteristic(Number(idealHum), Number(idealTemp));
-    if (ok && idealHum != '' && idealTemp != '')
-        alert("Set characteristics successfully");
-    else
-        alert("Can't set characteristics - invalid fields");
-}
-
-async function setHumidity() {
-    humidity = (document.getElementById('humidity').value);
-
-    ok = callSetHumidity(Number(humidity));
-    if (ok && humidity != '')
-        alert("Set humidity successfully");
-    else
-        alert("Can't set humidity - invalid fields");
-
-    console.log(ok);
-    console.log(humidity);
-}
-
-async function setTemperature() {
-    tempereture = (document.getElementById('temp').value);
-
-    ok = callSetTemperature(Number(tempereture));
-    if (ok && tempereture != '')
-        alert("Set temperature successfully");
-    else
-        alert("Can't set temperature - invalid fields");
 }

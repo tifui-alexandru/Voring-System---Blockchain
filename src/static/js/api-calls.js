@@ -1,12 +1,18 @@
-apiUrl = "http://127.0.0.1:5000"
+candidatesNo = 10;
 
-async function callRegister(username, password) {
+async function callVote(token, voteOption) {
+    if (token == '')
+        return "The token field is mandatory";
+
+    if (voteOption == '')
+        return "You must select a candidate";
+
     const postData = {
-        "password": password,
-        "username": username
+        "token": token,
+        "option": voteOption
     }
 
-    const response = await fetch("/auth/register", {
+    const response = await fetch("/vote", {
         method: "POST",
         body: JSON.stringify(postData),
         headers: {
@@ -14,87 +20,48 @@ async function callRegister(username, password) {
         }
     });
 
-    return response.ok;
+    return response.body;
 }
 
-async function callLogin(username, password) {
-    const postData = {
-        "password": password,
-        "username": username
+async function getNthCandidate(candidateIdx) {
+    const getData = {
+        'idx': candidateIdx
     }
 
-    const response = await fetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify(postData),
+    const response = await fetch("/nth_candidate", {
+        method: "GET",
+        body: JSON.stringify(getData),
         headers: {
             "Content-Type": "application/json"
         }
     });
 
-    return response.ok;
+    return response.body;
 }
 
-async function callSetCharacteristic(humidity, tempereture) {
-    const postData = {
-        "ideal_humidity": humidity,
-        "ideal_temperature": tempereture
+async function getNthResult(candidateIdx) {
+    const getData = {
+        'idx': candidateIdx
     }
 
-    const response = await fetch("/characteristics/set", {
-        method: "POST",
-        body: JSON.stringify(postData),
+    const response = await fetch("/nth_result", {
+        method: "GET",
+        body: JSON.stringify(getData),
         headers: {
             "Content-Type": "application/json"
         }
     });
 
-    return response.ok;
+    return response.body;
 }
 
-async function callSetHumidity(value) {
-    const postData = {
-        "value": value,
-    }
-
-    const response = await fetch("/humidity/set", {
-        method: "POST",
-        body: JSON.stringify(postData),
+async function getElectionsState() {
+    const response = await fetch("/state", {
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
     });
 
-    return response.ok;
-}
-
-async function callSetTemperature(degrees) {
-    const postData = {
-        "degrees": degrees,
-    }
-
-    const response = await fetch("/temperature/set", {
-        method: "POST",
-        body: JSON.stringify(postData),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-
-    return response.ok;
-}
-
-async function callForceWater(value) {
-    const postData = {
-        "value": value,
-    }
-
-    const response = await fetch("/force_water", {
-        method: "POST",
-        body: JSON.stringify(postData),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-
-    return response.ok;
+    return response.body;
 }
