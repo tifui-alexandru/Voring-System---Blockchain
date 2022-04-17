@@ -16,6 +16,8 @@
         Implementarea sistemului de votare
         <ul>
             <li> Crearea, deschiderea și închiderea alegerilor </li>
+            <li> Verificarea dreptului de proprietar și autorizarea votanților </li>
+            <li> Votarea și câștigarea alegerilorVotarea și câștigarea alegerilor </li>
         </ul>
     </li>
     <li>Interfața</li>
