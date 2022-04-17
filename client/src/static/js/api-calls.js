@@ -1,67 +1,64 @@
-candidatesNo = 10;
+async function getElectionsState() {
+    const web3 = await getWeb3();
+    const Ballot = await getContract(web3);
+
+    state = await Ballot.methods.electionState().call();
+    return state;
+}
 
 async function callVote(token, voteOption) {
+    const web3 = await getWeb3();
+    const Ballot = await getContract(web3);
+
     if (token == '')
         return "The token field is mandatory";
 
     if (voteOption == '')
         return "You must select a candidate";
 
-    const postData = {
-        "token": token,
-        "option": voteOption
+    if (allowed_tokens.has() !== true)
+        return "Invalid token";
+
+    try {    
+        await Ballot.methods.vote(option).send();
+    } 
+    catch (err) {
+        return "You have already voted";
     }
 
-    const response = await fetch("/vote", {
-        method: "POST",
-        body: JSON.stringify(postData),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
+    return "Success";
+}
 
-    return response.body;
+async function getCandidatesNo() {
+    const web3 = await getWeb3();
+    const Ballot = await getContract(web3);
+
+    candidatesNo = await Ballot.methods.candidatesNo().call();
+    return candidatesNo;
 }
 
 async function getNthCandidate(candidateIdx) {
-    const getData = {
-        'idx': candidateIdx
+    const web3 = await getWeb3();
+    const Ballot = await getContract(web3);
+
+    try {
+        candidateName = await Ballot.methods.nthCandidate(idx).call();
+        return candidateName;
     }
-
-    const response = await fetch("/nth_candidate", {
-        method: "GET",
-        body: JSON.stringify(getData),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-
-    return response.body;
+    catch (err) {
+        return "Candidate index out of range";
+    }
 }
 
 async function getNthResult(candidateIdx) {
-    const getData = {
-        'idx': candidateIdx
+    const web3 = await getWeb3();
+    const Ballot = await getContract(web3);
+
+    try {
+        candidateResult = await Ballot.methods.nthNoVotes(idx).call();
+        return candidateResult;
     }
-
-    const response = await fetch("/nth_result", {
-        method: "GET",
-        body: JSON.stringify(getData),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-
-    return response.body;
-}
-
-async function getElectionsState() {
-    const response = await fetch("/state", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-
-    return response.body;
+    catch (err) {
+        return "Candidate index out of range";
+    }
 }

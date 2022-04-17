@@ -13,7 +13,7 @@ function constructErrorCard(msg) {
 }
 
 async function vote() {
-    state = await getElectionsState(); 
+    state = await getElectionsState();
 
     if (state === "finished") {
         alert("The voting has finished. You cannot vote anymore.");
@@ -44,6 +44,7 @@ async function vote() {
 
 async function getResults() {
     state = await getElectionsState(); 
+    noCandidates = await getCandidatesNo();
 
     if (state === "unfinished") {
         alert("The voting is still ongoing. You cannot see the results untul the end of the elections.")
