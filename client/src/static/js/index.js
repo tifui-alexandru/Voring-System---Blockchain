@@ -1,3 +1,5 @@
+apiUrl = "http://localhost:3000"
+
 function constructErrorCard(msg) {
     errorCard = document.createElement('div');
     errorCard.className = 'card';
@@ -77,20 +79,29 @@ async function getResults() {
         window.location.href = "../index.html";
     }
     else {
-        noCandidates = await getCandidatesNo(web3, Ballot, accounts);
+        noCandidates = parseInt(await getCandidatesNo(web3, Ballot, accounts), 10);
 
         resultContainer = document.getElementById("results-container");
 
+        candidates = []
+
         totalVotes = 0
-        for (let i = 0; i < noCandidates; ++i)
-            totalVotes += number(await getNthResult(i, web3, Ballot, accounts));
+        for (let i = 0; i < noCandidates; ++i) {
+            candidateResult = parseInt(await getNthResult(i, web3, Ballot, accounts), 10);
+            candidateName = await getNthCandidate(i, web3, Ballot, accounts);
+
+            candidates.push({ "name" : candidateName, "result" : candidateResult });
+
+            totalVotes += candidateResult;
+        }
+
+        candidates.sort((a, b) => {
+            return b.result - a.result
+        });
     
         for (let i = 0; i < noCandidates; ++i) {
-            candidateName = await getNthCandidate(i, web3, Ballot, accounts);
-            candidateResult = number(await getNthResult(i, web3, Ballot, accounts));
-    
-            candidateResult = 100 * (candidateResult / totalVotes);
-
+            candidateName = candidates[i].name;
+            candidateResult = Math.round(100 * (candidates[i].result / totalVotes)).toFixed(2);
             
             newCandidateResult = createCandidateResult(candidateResult, candidateName);
     
@@ -112,7 +123,7 @@ function createCandidateResult(result, name) {
     p.innerText = name
 
     span = document.createElement('span')
-    span.innerText = result
+    span.innerText = result + " %"
     span.className = "badge badge-primary badge-pill"
 
     li.appendChild(p);

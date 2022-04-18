@@ -3,10 +3,6 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract Ballot {
     // * struct types
-    struct Voter {
-        address identifier;
-        uint choice;
-    }
     struct Candidate {
         string name;
         uint numVotes;
@@ -31,7 +27,7 @@ contract Ballot {
     }
     // check for a valid voter
     modifier canVote(){
-        require(alreadyVoted[msg.sender] != VoterState.Granted, "This person already voted.");
+        require(alreadyVoted[msg.sender] == VoterState.Granted, "This person already voted or does not have the right to vote");
         _;
     }
     // check if state is in progress
@@ -63,8 +59,6 @@ contract Ballot {
     }
     // * functionalities for chairperson
     function grantVoter(address _voter) public notStarted isChairperson {
-        Voter memory v;
-        v.identifier = _voter;
         alreadyVoted[_voter] = VoterState.Granted;
     }
 
@@ -74,23 +68,6 @@ contract Ballot {
 
     function endBallot() public inProgress {
         state = VotingState.Completed;
-
-        // * sort the candidates
-
-        for (uint i = 0; i < candidatesList.length; i++) {
-            uint max = 0;
-            uint id;
-            for(uint j = i; j < candidatesList.length; j++) {
-                if(candidatesList[j].numVotes > max) {
-                    max = candidatesList[j].numVotes;
-                    id = i;
-                }
-            }
-
-            Candidate memory aux = candidatesList[i];
-            candidatesList[i] = candidatesList[id];
-            candidatesList[id] = aux;
-        }
     }
 
     // * functionalities for 

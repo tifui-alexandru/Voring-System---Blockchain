@@ -1,5 +1,7 @@
 async function getElectionsState(web3, Ballot, accounts) {
+    console.log("reached here");
     state = await Ballot.methods.electionState().call()
+    console.log("got state");
     return state;
 }
 
@@ -8,7 +10,8 @@ async function callVote(voteOption, web3, Ballot, accounts) {
         return "You must select a candidate";
 
     try {    
-        console.log(accounts);
+        voteOption = parseInt(voteOption, 10) - 1;
+
         await Ballot.methods.vote(voteOption).send({ from: accounts[0] });
     } 
     catch (err) {
