@@ -95,12 +95,6 @@ contract Ballot {
 
     // * functionalities for 
 
-    function checkOwner() public view returns (bool) {
-        if (msg.sender == chairperson) 
-            return true;
-        return false;
-    }
-
     function vote(uint _choice) public inProgress canVote {
         // * check if the choice is in the candidacy list
         require(_choice < candidatesList.length, "There is no choice for this");
