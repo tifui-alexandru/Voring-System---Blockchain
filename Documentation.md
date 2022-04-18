@@ -45,11 +45,42 @@ Sistemul de votare permite unui proprietar să își creeze o alegere cu scop sa
 
 * [Solidity](https://docs.soliditylang.org/en/v0.8.13/)
 * [Javascript](https://www.javascript.com/)
+* [Truffle](https://trufflesuite.com/)
+* [Ganache](https://trufflesuite.com/ganache/)
+* [MetaMask](https://metamask.io/)
 * [Web3.js](https://web3js.readthedocs.io/en/v1.7.3/)
 * [Nodejs](https://nodejs.org/en/)
-* [Express](https://expressjs.com/)
 
 ### Usage
+
+Trebuie să instalăm următoarele: truffle, ganache, metamask.
+
+Comenzile de care avem nevoie pentru a porni aplicația:
+```bash
+conda activate blockchain
+ganache -p 7545 -i 5777
+truffle migrate --reset all
+node client/src/script.js
+```
+Apoi intrăm pe localhost:3000 și ne conectăm cu MetaMask.
+
+Pentru a porni alegerile, adminul folosește truffle console astfel:
+```bash
+truffle console
+ballot = await Ballot.deployed()
+ballot.grantVoter(adresaUser)
+ballot.startBallot()
+```
+Putem verifica că alegerile au fost pornite astfel:
+```bash
+ballot.electionState()
+>in_progress
+```
+
+Pentru a închide alegerile:
+```bash
+ballot.endBallot()
+```
 
 ### Implementarea sistemului de votare
 
@@ -71,6 +102,8 @@ constructor(string memory _title, bytes32[] memory _candidateList){
             numVotes: 0
         }));
     }
+    state = VotingState.Registered;
+}
        
 ```
 
@@ -103,8 +136,6 @@ Un votant se află în una dintre stările: neautorizat (NotGranted), autorizat(
 
 ```javascript
   function grantVoter(address _voter) public notStarted isChairperson {
-      Voter memory v;
-      v.identifier = _voter;
       alreadyVoted[_voter] = VoterState.Granted;
   }
 ```
@@ -125,19 +156,12 @@ Votarea are loc prin funcția vote, dacă alegerile sunt încă în desfășurar
   }
 ```
 
-Funcțiile winningId și winningCandidate returnează id-ul, respectiv numele candidatului câștigător. Acestea rulează dacă alegerile s-au terminat și caută în lista candidaților pe cel cu număr maxim de voturi.
+Funcțiile nthCandidate și nthNoVotes returnează numele, respectiv numarul de voturi ale candidatului cu indexul n. Acestea verfică dacă candidatul cu indexul n există.
 
 ```javascript
-  function winningCandidate() public view finished returns (bytes32 name_) {
-      uint max = 0;
-      uint id;
-      for(uint i = 0; i < candidatesList.length; i++) {
-          if(candidatesList[i].numVotes > max) {
-              max = candidatesList[i].numVotes;
-              id = i;
-          }
-      }
-      name_ = candidatesList[id].name;
+  function nthCandidate(uint _id) public view finished returns (string memory) {
+      require(_id < candidatesList.length, "Candidate index out of range");
+      return candidatesList[_id].name;
   }
 ```
 
@@ -156,3 +180,9 @@ A doua migrație face deploy la contactul Ballot (are poate fi găsit în contra
 - *getContract*: pentru a crea o instanță a contractului.
 
 * ### Interacționarea cu smart contractul
+
+Fișierul api-calls.js conține câteva funcții ajutătoare pentru a apela metodele din smart contract.
+
+Funcțiile *getElectionState*, *callVote*, *getCandidatesNo*, *getNthCandidate* și *getNthResult* apelează metodele corespunzătoare și tratează excepțiile.  
+
+Fișierul index.js conține funcțiile *constructErrorCard*, *connectToContract*, *vote*, *getVotes*, *getResults* și *createCandidateResult* și face legătura dintre html și funcționalități.
