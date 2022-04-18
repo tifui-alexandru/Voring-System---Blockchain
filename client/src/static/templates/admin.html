@@ -52,39 +52,36 @@
                             class="img-fluid" alt="Sample image">
                     </div>
 
+                    <!-- <button type="button" class="btn btn-primary"><a class="text-white btn btn-link" onclick="start_voting()">&nbsp;Start voting</a></button>
+                    <button type="button" class="btn btn-primary"><a class="text-white btn btn-link" onclick="end_voting()">&nbsp;End voting</a></button> -->
+
                     <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1" id="voteForm">
                         <form>
-                            <!-- <h1>
-                                Enter the token provided by your authority
-                            </h1>
-                            <div class="form-outline mb-4">
-                                <input type="text" id="token" class="form-control form-control-lg"
-                                    placeholder="Token" />
-                                <label class="form-label" for="token"></label>
-                            </div> -->
 
                             <h1>
-                                Select a candidate
+                                Enter the wallet address you wish to grant voting access to
                             </h1>
-
-                            <select class="custom-select" id="candidates">
-                                <option selected>Choose...</option>
-                                <option value="1">Candidate 1</option>
-                                <option value="2">Candidate 2</option>
-                                <option value="3">Candidate 3</option>
-                                <option value="4">Candidate 4</option>
-                                <option value="5">Candidate 5</option>
-                                <option value="6">Candidate 6</option>
-                                <option value="7">Candidate 7</option>
-                                <option value="8">Candidate 8</option>
-                                <option value="9">Candidate 9</option>
-                                <option value="10">Candidate 10</option>
-                              </select>
+                            <div class="form-outline mb-4">
+                                <input type="text" id="address" class="form-control form-control-lg"
+                                    placeholder="Wallet address" />
+                                <label class="form-label" for="token"></label>
+                            </div>
 
                               <div class="text-center text-lg-start mt-4 pt-2">
                                 <button type="button" class="btn btn-primary btn-lg"
-                                    style="padding-left: 2.5rem; padding-right: 2.5rem;" onclick="vote()">Submit vote</button>
+                                    style="padding-left: 2.5rem; padding-right: 2.5rem;" onclick="grantAccess()">Grant voting access</button>
                             </div>
+
+                            <div class="text-center text-lg-start mt-4 pt-2">
+                                <button type="button" class="btn btn-primary btn-lg"
+                                    style="padding-left: 2.5rem; padding-right: 2.5rem;" onclick="startVoting()">Start voting</button>
+                            </div>
+
+                            <div class="text-center text-lg-start mt-4 pt-2">
+                                <button type="button" class="btn btn-primary btn-lg"
+                                    style="padding-left: 2.5rem; padding-right: 2.5rem;" onclick="endVoting()">End voting</button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -93,7 +90,7 @@
     </div>
 
     <script>
-        getVotes();
+        getAdmin();
     </script>
 
 </body>
