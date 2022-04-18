@@ -20,7 +20,14 @@
             <li> Votarea și câștigarea alegerilorVotarea și câștigarea alegerilor </li>
         </ul>
     </li>
-    <li>Interfața</li>
+    <li>
+        Client
+        <ul>
+            <li> Migrații </li>
+            <li> Legarea front end-ului cu smart contractul </li>
+            <li> Interacționarea cu smart contractul </li>
+        </ul>
+    </li>
   </ol>
 </details>
 
@@ -38,7 +45,9 @@ Sistemul de votare permite unui proprietar să își creeze o alegere cu scop sa
 
 * [Solidity](https://docs.soliditylang.org/en/v0.8.13/)
 * [Javascript](https://www.javascript.com/)
-* [Bootstrap](https://getbootstrap.com/)
+* [Web3.js](https://web3js.readthedocs.io/en/v1.7.3/)
+* [Nodejs](https://nodejs.org/en/)
+* [Express](https://expressjs.com/)
 
 ### Usage
 
@@ -132,4 +141,18 @@ Funcțiile winningId și winningCandidate returnează id-ul, respectiv numele ca
   }
 ```
 
-### Interfața
+### Client
+* ### Migrații
+Proiectul cuprinde 2 migrații: 1_initial_migration.js și 2_deploy_ballot.js.
+
+Prima migrație face deploy la contractul Migrations (care poate fi găsit în contracts/Migrations.sol).
+
+A doua migrație face deploy la contactul Ballot (are poate fi găsit în contracts/Ballot.sol). Astfel sunt create alegeri cu titlul "USA Election 1904" și lista de candidați "Candidate 1", "Candidate 2", ..., "Candidate 10".
+
+* ### Legarea front end-ului cu smart contractul
+
+În fișierul utils.js am creat funcțiile:
+- *getWeb3*: pentru a instanția un obiect de tip web3. Am folosit window.ethereum ca provider și window.ethereum.request pentru a cere permisiunea pentru a accesa conturile.
+- *getContract*: pentru a crea o instanță a contractului.
+
+* ### Interacționarea cu smart contractul
