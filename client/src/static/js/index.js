@@ -12,23 +12,41 @@ function constructErrorCard(msg) {
     return errorCard;
 }
 
-async function vote() {
-    console.log("hello");
+let web3 = undefined;
+let Ballot = undefined;
+let accounts = undefined;
 
-    state = await getElectionsState();
+async function connectToContract() {
+    if (web3 == undefined) {
+        web3 = await getWeb3();
+        console.log("got web3");
+    
+        Ballot = await getContract(web3);
+        console.log("got contract");
+    
+        accounts = await web3.eth.getAccounts();
+        console.log("got accounts");
+    }
+}
+
+async function vote() {
+    await connectToContract();
+
+    state = await getElectionsState(web3, Ballot, accounts);
 
     console.log(state);
 
     if (state === "finished") {
         alert("The voting has finished. You cannot vote anymore.");
     }
+    else if (state === "not started") {
+        alert("The voting did not start yet")
+    }
     else {
-        token = document.getElementById("token").value;
-
         select = document.getElementById('candidates');
         voteOption = select.options[select.selectedIndex].value;
 
-        response = await callVote(token, voteOption);
+        response = await callVote(voteOption, web3, Ballot, accounts);
         errorCard = document.getElementById("error-card");
 
         if (response === "Success") {
@@ -47,20 +65,24 @@ async function vote() {
 }
 
 async function getResults() {
-    state = await getElectionsState(); 
-    noCandidates = await getCandidatesNo();
+    await connectToContract();
 
-    if (state === "unfinished") {
-        alert("The voting is still ongoing. You cannot see the results untul the end of the elections.")
+    state = await getElectionsState(web3, Ballot, accounts); 
+
+    if (state !== "finished") {
+        alert("The voting did not end. You cannot see the results until the end of the elections.")
+        window.location.href = "../index.html";
     }
     else {
+        noCandidates = await getCandidatesNo(web3, Ballot, accounts);
+
         totalVotes = 0
         for (let i = 0; i < noCandidates; ++i)
-            totalVotes += number(await getNthResult(i));
+            totalVotes += number(await getNthResult(i, web3, Ballot, accounts));
     
         for (let i = 0; i < noCandidates; ++i) {
-            candidateName = await getNthCandidate(i);
-            candidateResult = number(await getNthResult(i));
+            candidateName = await getNthCandidate(i, web3, Ballot, accounts);
+            candidateResult = number(await getNthResult(i, web3, Ballot, accounts));
     
             candidateResult = 100 * (candidateResult / totalVotes);
     

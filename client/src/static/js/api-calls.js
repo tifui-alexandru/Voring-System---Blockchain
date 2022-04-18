@@ -1,57 +1,47 @@
-async function getElectionsState() {
-    console.log("entered election state")
+async function getElectionsState(web3, Ballot, accounts) {
+    // const web3 = await getWeb3();
+    // const Ballot = await getContract(web3);
 
-    const web3 = await getWeb3();
+    state = await Ballot.methods.electionState().call()
 
-    console.log("got web3")
-    const Ballot = await getContract(web3);
-
-    console.log("got contract")
-
-    state = await Ballot.methods.electionState().call();
-
-    console.log("got state")
+    console.log("got state");
 
     return state;
 }
 
-async function callVote(token, voteOption) {
-    const web3 = await getWeb3();
-    const Ballot = await getContract(web3);
-
-    if (token == '')
-        return "The token field is mandatory";
+async function callVote(voteOption, web3, Ballot, accounts) {
+    // const web3 = await getWeb3();
+    // const accounts = await web3.eth.getAccounts();
+    // const Ballot = await getContract(web3);
 
     if (voteOption == '')
         return "You must select a candidate";
 
-    if (allowed_tokens.has() !== true)
-        return "Invalid token";
-
     try {    
-        await Ballot.methods.vote(option).send();
+        await Ballot.methods.vote(option).send({ from: accounts[0] });
+        console.log("sent vote");
     } 
     catch (err) {
-        return "You have already voted";
+        return "You either don't have the right to vote or you voted already";
     }
 
     return "Success";
 }
 
-async function getCandidatesNo() {
-    const web3 = await getWeb3();
-    const Ballot = await getContract(web3);
+async function getCandidatesNo(web3, Ballot, accounts) {
+    // const web3 = await getWeb3();
+    // const Ballot = await getContract(web3);
 
     candidatesNo = await Ballot.methods.candidatesNo().call();
     return candidatesNo;
 }
 
-async function getNthCandidate(candidateIdx) {
-    const web3 = await getWeb3();
-    const Ballot = await getContract(web3);
+async function getNthCandidate(candidateIdx, web3, Ballot, accounts) {
+    // const web3 = await getWeb3();
+    // const Ballot = await getContract(web3);
 
     try {
-        candidateName = await Ballot.methods.nthCandidate(idx).call();
+        candidateName = await Ballot.methods.nthCandidate(candidateIdx).call();
         return candidateName;
     }
     catch (err) {
@@ -59,12 +49,12 @@ async function getNthCandidate(candidateIdx) {
     }
 }
 
-async function getNthResult(candidateIdx) {
-    const web3 = await getWeb3();
-    const Ballot = await getContract(web3);
+async function getNthResult(candidateIdx, web3, Ballot, accounts) {
+    // const web3 = await getWeb3();
+    // const Ballot = await getContract(web3);
 
     try {
-        candidateResult = await Ballot.methods.nthNoVotes(idx).call();
+        candidateResult = await Ballot.methods.nthNoVotes(candidateIdx).call();
         return candidateResult;
     }
     catch (err) {

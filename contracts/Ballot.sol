@@ -105,8 +105,10 @@ contract Ballot {
     function electionState() public view returns (string memory) {
         if (state == VotingState.Completed)
             return "finished";
+        if (state == VotingState.Progress)
+            return "in progress";
         else
-            return "unfinished";
+            return "not started";
     }
 
     function candidatesNo() public view returns (uint no_) {

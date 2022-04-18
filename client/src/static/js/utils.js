@@ -1,5 +1,22 @@
 function getWeb3() {
-    return new Web3(Web3.givenProvider);
+    return new Promise((resolve, reject) => {
+        window.addEventListener("load", async () => {
+            if (window.ethereum) {
+                let web3 = new Web3(Web3.givenProvider);
+
+                try {
+                    await window.ethereum.request({ method: "eth_requestAccounts" });
+                    resolve(web3);
+                }
+                catch (error) {
+                    reject(error);
+                }
+            }
+            else {
+                reject("Please install MetaMask");
+            }
+        })
+    })
 }
 
 async function getContract(web3) {
@@ -9,9 +26,6 @@ async function getContract(web3) {
     networkAddress = data.networks[networkId]["address"];
 
     ballot = new web3.eth.Contract(data.abi, networkAddress);
-
-    console.log(data.abi);
-    console.log(networkAddress);
     
     return ballot;
 }
