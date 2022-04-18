@@ -13,7 +13,11 @@ function constructErrorCard(msg) {
 }
 
 async function vote() {
+    console.log("hello");
+
     state = await getElectionsState();
+
+    console.log(state);
 
     if (state === "finished") {
         alert("The voting has finished. You cannot vote anymore.");

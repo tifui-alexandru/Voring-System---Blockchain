@@ -1,6 +1,6 @@
 const Ballot = artifacts.require("Ballot");
 
-const electionTtile = "USA Election 1904";
+const electionTitle = "USA Election 1904";
 const candidates = [
     "Candidate 1",
     "Candidate 2",
@@ -15,5 +15,5 @@ const candidates = [
 ];
 
 module.exports = function (deployer) {
-    deployer.deploy(Ballot, electionTtile, candidates);
+    deployer.deploy(Ballot, electionTitle, candidates);
 };

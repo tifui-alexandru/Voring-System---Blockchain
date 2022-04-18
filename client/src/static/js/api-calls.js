@@ -1,8 +1,17 @@
 async function getElectionsState() {
+    console.log("entered election state")
+
     const web3 = await getWeb3();
+
+    console.log("got web3")
     const Ballot = await getContract(web3);
 
+    console.log("got contract")
+
     state = await Ballot.methods.electionState().call();
+
+    console.log("got state")
+
     return state;
 }
 

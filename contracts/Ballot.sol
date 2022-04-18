@@ -102,11 +102,11 @@ contract Ballot {
         alreadyVoted[msg.sender] = VoterState.Voted;
     }
 
-    function electionState() public view returns (string memory state_) {
+    function electionState() public view returns (string memory) {
         if (state == VotingState.Completed)
-            state_ = "finished";
+            return "finished";
         else
-            state_ = "unfinished";
+            return "unfinished";
     }
 
     function candidatesNo() public view returns (uint no_) {
@@ -115,13 +115,13 @@ contract Ballot {
 
     // * at the end of balloot
 
-    function nthCandidate(uint _id) public view finished returns (string memory name_) {
+    function nthCandidate(uint _id) public view finished returns (string memory) {
         require(_id < candidatesList.length, "Candidate index out of range");
-        name_ = candidatesList[_id].name;
+        return candidatesList[_id].name;
     }
 
-    function nthNoVotes(uint _id) public view finished returns (uint no_) {
+    function nthNoVotes(uint _id) public view finished returns (uint) {
         require(_id < candidatesList.length, "Candidate index out of range");
-        no_ = candidatesList[_id].numVotes;
+        return candidatesList[_id].numVotes;
     }
 }
