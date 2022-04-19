@@ -1,11 +1,7 @@
-<!-- README template used: https://github.com/othneildrew/Best-README-Template -->
-
 <h3 align="center">Voting System</h3>
   <p align="center">
     Blockchain project
   </p>
-
-<!-- TABLE OF CONTENTS -->
 <details>
   <summary>Cuprins</summary>
   <ol>
@@ -33,9 +29,7 @@
 
 ## Introducere
 
-Acest proiect cuprinde un sistem de votare implementat folosind tehnologia Blockchain și este creat de: <a href="https://github.com/anacomo">Ana-Maria Comorașu</a>,
-<a href="https://github.com/tifui-alexandru/">Alexandru Țifui</a>,
-<a href="https://github.com/lauratender">Laura Tender</a>.
+Acest proiect cuprinde un sistem de votare implementat folosind tehnologia Blockchain și este creat de: <a href="https://github.com/anacomo">Ana-Maria Comorașu</a>, <a href="https://github.com/tifui-alexandru/">Alexandru Țifui</a>, <a href="https://github.com/lauratender">Laura Tender</a>.
 
 Proiectul a fost dezvoltat în cadrul cursului Blockchain din anul al III-lea la Facultatea de Matematică și Informatică, Universitatea din București.
 
@@ -84,7 +78,7 @@ ballot.endBallot()
 
 ### Implementarea sistemului de votare
 
-Implementarea sistemului de votare poate fi găsită în fișierul _Ballot.sol_.
+Implementarea sistemului de votare poate fi găsită în fișierul ```Ballot.sol```.
 
 * ### Crearea, deschiderea și închiderea alegerilor
 
@@ -107,7 +101,7 @@ constructor(string memory _title, bytes32[] memory _candidateList){
        
 ```
 
-Votarea poate avea trei stări: nu a început (registered), în desfășurare, încheiată. Verificarea stărilor are loc prin modifierii: inProgress, notStarted, finished. Funcția startBallot deschide alegerile, iar funcția endBallot le încheie.
+Votarea poate avea trei stări: nu a început (registered), în desfășurare, încheiată. Verificarea stărilor are loc prin modifierii: ```inProgress```, ```notStarted```, ```finished```. Funcția ```startBallot``` deschide alegerile, iar funcția ```endBallot``` le încheie.
 
 ```javascript
   function startBallot() public notStarted isChairperson {
@@ -123,7 +117,7 @@ Votarea poate avea trei stări: nu a început (registered), în desfășurare, �
 
 Această parte este realizată de *Laura Tender*.
 
-Verificarea dreptului de proprietar este implementată cu ajutorul modifierului isChairperson, prin care ne asigurăm că senderul este persoană care a creat alegerile. Aceast modifier este folosit pentru deschiderea și închiderea alegerilor, cât și pentru autorizarea votanților.
+Verificarea dreptului de proprietar este implementată cu ajutorul modifierului ```isChairperson```, prin care ne asigurăm că senderul este persoană care a creat alegerile. Aceast modifier este folosit pentru deschiderea și închiderea alegerilor, cât și pentru autorizarea votanților.
 
 ```javascript
   modifier isChairperson(){
@@ -132,7 +126,7 @@ Verificarea dreptului de proprietar este implementată cu ajutorul modifierului 
   }
 ```
 
-Un votant se află în una dintre stările: neautorizat (NotGranted), autorizat(granted) și care a votat deja (Voted). Votanții sunt reținuți într-un dincționar în care cheia este adresa lor, iar valoarea este starea sa.Autorizarea unui votant are loc în funcția grantVoter prin care votantul este adăugat în dicționar cu starea granted.
+Un votant se află în una dintre stările: neautorizat (```NotGranted```), autorizat(```Granted```) și care a votat deja (```Voted```). Votanții sunt reținuți într-un dicționar în care cheia este adresa lor, iar valoarea este starea sa. Autorizarea unui votant are loc în funcția grantVoter prin care votantul este adăugat în dicționar cu starea granted.
 
 ```javascript
   function grantVoter(address _voter) public notStarted isChairperson {
@@ -140,11 +134,11 @@ Un votant se află în una dintre stările: neautorizat (NotGranted), autorizat(
   }
 ```
 
-* ### Votarea și câștigarea alegerilor
+* ### Votarea și rezultatele alegerilor
 
 Această parte este realizată de *Alexandru Țifui*.
 
-Votarea are loc prin funcția vote, dacă alegerile sunt încă în desfășurare și dacă persoană are drept de vot. Odată ce este condiții sunt îndeplinite, verificăm că opțiunea de vot este una validă, creștem cu un vot numărul de voturi pentru acest candidat și schimbăm starea votantului din Granted în Voted.
+Votarea are loc prin funcția ```vote```, dacă alegerile sunt încă în desfășurare și dacă persoană are drept de vot. Odată ce este condiții sunt îndeplinite, verificăm că opțiunea de vot este una validă, creștem cu un vot numărul de voturi pentru acest candidat și schimbăm starea votantului din ```Granted``` în ```Voted```.
 
 ```javascript
   function vote(uint _choice) public inProgress canVote {
@@ -156,7 +150,7 @@ Votarea are loc prin funcția vote, dacă alegerile sunt încă în desfășurar
   }
 ```
 
-Funcțiile nthCandidate și nthNoVotes returnează numele, respectiv numarul de voturi ale candidatului cu indexul n. Acestea verfică dacă candidatul cu indexul n există.
+Funcțiile ```nthCandidate``` și ```nthNoVotes``` returnează numele, respectiv numarul de voturi ale candidatului cu indexul ```n```. Acestea verfică dacă candidatul cu indexul ```n``` există.
 
 ```javascript
   function nthCandidate(uint _id) public view finished returns (string memory) {
@@ -167,22 +161,22 @@ Funcțiile nthCandidate și nthNoVotes returnează numele, respectiv numarul de 
 
 ### Client
 * ### Migrații
-Proiectul cuprinde 2 migrații: 1_initial_migration.js și 2_deploy_ballot.js.
+Proiectul cuprinde 2 migrații: ```1_initial_migration.js``` și ```2_deploy_ballot.js```.
 
-Prima migrație face deploy la contractul Migrations (care poate fi găsit în contracts/Migrations.sol).
+Prima migrație face deploy la contractul ```Migrations``` (care poate fi găsit în ```contracts/Migrations.sol```).
 
-A doua migrație face deploy la contactul Ballot (are poate fi găsit în contracts/Ballot.sol). Astfel sunt create alegeri cu titlul "USA Election 1904" și lista de candidați "Candidate 1", "Candidate 2", ..., "Candidate 10".
+A doua migrație face deploy la contactul Ballot (are poate fi găsit în ```contracts/Ballot.sol```). Astfel sunt create alegeri cu titlul "USA Election 1904" și lista de candidați "Candidate 1", "Candidate 2", ..., "Candidate 10".
 
 * ### Legarea front end-ului cu smart contractul
 
-În fișierul utils.js am creat funcțiile:
-- *getWeb3*: pentru a instanția un obiect de tip web3. Am folosit window.ethereum ca provider și window.ethereum.request pentru a cere permisiunea pentru a accesa conturile.
-- *getContract*: pentru a crea o instanță a contractului.
+În fișierul ```utils.js``` am creat funcțiile:
+- ```getWeb3```: pentru a instanția un obiect de tip web3. Am folosit window.ethereum ca provider și window.ethereum.request pentru a cere permisiunea pentru a accesa conturile.
+- ```getContract```: pentru a crea o instanță a contractului.
 
 * ### Interacționarea cu smart contractul
 
-Fișierul api-calls.js conține câteva funcții ajutătoare pentru a apela metodele din smart contract.
+Fișierul ```api-calls.js``` conține câteva funcții ajutătoare pentru a apela metodele din smart contract.
 
-Funcțiile *getElectionState*, *callVote*, *getCandidatesNo*, *getNthCandidate* și *getNthResult* apelează metodele corespunzătoare și tratează excepțiile.  
+Funcțiile ```getElectionState```, ```callVote```, ```getCandidatesNo```, ```getNthCandidate``` și ```getNthResult``` apelează metodele corespunzătoare și tratează excepțiile.  
 
-Fișierul index.js conține funcțiile *constructErrorCard*, *connectToContract*, *vote*, *getVotes*, *getResults* și *createCandidateResult* și face legătura dintre html și funcționalități.
+Fișierul ```index.js``` conține funcțiile ```constructErrorCard```, ```connectToContract```, ```vote```, ```getVotes```, ```getResults``` și ```createCandidateResult``` și face legătura dintre html și funcționalități.
